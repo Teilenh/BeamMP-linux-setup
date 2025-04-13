@@ -51,4 +51,5 @@ echo "=== [6/6] Compilation du Launcher ==="
 ninja -C bin
 
 echo "✅ Compilation réussie !"
+
 echo "👉 Exécutable disponible ici : $BEAMMP_DIR/bin"
