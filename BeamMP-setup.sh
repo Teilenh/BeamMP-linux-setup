@@ -7,8 +7,8 @@ VCPKG_DIR="$HOME/vcpkg"
 BEAMMP_DIR="$HOME/BeamMP-Launcher"
 
 echo "=== [1/6] Mise à jour des paquets et installation des outils nécessaires ==="
-sudo apt update
-sudo apt install -y build-essential cmake git curl
+sudo apt-get -qq update
+sudo apt-get -qq install -y build-essential cmake git curl
 
 echo "### [2/6] Préparation de vcpkg ###"
 if [ -d "$VCPKG_DIR" ] && [ -f "$VCPKG_DIR/bootstrap-vcpkg.sh" ]; then
@@ -40,7 +40,7 @@ cmake . -B bin \
     -DVCPKG_TARGET_TRIPLET=x64-linux
 
 echo "### [5/6] Compilation du Launcher ###"
-cmake --build bin --parallel
+cmake --build bin --parallel --quiet
 if [ -f "$BEAMMP_DIR/bin/BeamMP-Launcher" ]; then
     echo "    - L'exécutable a bien été généré : $BEAMMP_DIR/bin/BeamMP-Launcher"
 else
