@@ -35,7 +35,7 @@ if [ -d "$BEAMMP_DIR" ] && [ -f "$BEAMMP_DIR/CMakeLists.txt" ]; then
     echo "✅ Dossier BeamMP-Launcher valide trouvé dans $BEAMMP_DIR"
 else
     echo "📦 Clonage du dépôt BeamMP-Launcher..."
-    rm -rf "$BEAMMP_DIR"  # Supprime l'ancien s'il est vide ou incomplet
+    rm -rf "$BEAMMP_DIR" 
     git clone https://github.com/BeamMP/BeamMP-Launcher.git "$BEAMMP_DIR"
 fi
 
