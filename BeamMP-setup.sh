@@ -42,8 +42,8 @@ cmake . -B bin \
 echo "=== [6/6] Compilation du Launcher ==="
 cmake --build bin --parallel
 if [ -f "$BEAMMP_DIR/bin/BeamMP-Launcher" ]; then
-    echo "✅ L'exécutable a bien été généré : $BEAMMP_DIR/bin/BeamMP-Launcher"
+    echo "    - L'exécutable a bien été généré : $BEAMMP_DIR/bin/BeamMP-Launcher"
 else
-    echo "⛔ Échec de la compilation : aucun exécutable trouvé."
+    echo "    - Échec de la compilation : aucun exécutable trouvé."
     exit 1
 fi
