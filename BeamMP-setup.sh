@@ -48,10 +48,10 @@ else
     exit 1
 fi
 echo "### [6/6] Raccourci de lancement (optionnel) ###"
-read -rp "🔗 Souhaitez-vous créer un raccourci global dans /usr/local/bin ? [y/N] " create_link
+read -rp "Souhaitez-vous créer un raccourci global dans /usr/local/bin ? [y/N] " create_link
 if [[ "$create_link" =~ ^[YyOo]$ ]]; then
     sudo ln -sf "$BEAMMP_DIR/bin/BeamMP-Launcher" /usr/local/bin/beammp
-    echo "✅ Raccourci créé : vous pouvez maintenant lancer le jeu avec la commande 'beammp'"
+    echo "    - Raccourci créé : vous pouvez maintenant lancer le jeu avec la commande 'beammp'"
 else
-    echo "ℹ️ Raccourci non créé."
+    echo "    - Raccourci non créé."
 fi
