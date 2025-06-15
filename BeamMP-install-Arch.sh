@@ -7,7 +7,7 @@ BEAMMP_DIR="$HOME/BeamMP-Launcher"
 
 echo "=== [1/6] Mise à jour des paquets et installation des outils nécessaires ==="
 sudo pacman -Syu --noconfirm
-sudo pacman -S --noconfirm base-devel cmake git curl ninja zip unzip
+sudo pacman -S --noconfirm base-devel cmake git curl zip unzip
 
 echo "### [2/6] Préparation de vcpkg ###"
 if [ -d "$VCPKG_DIR" ] && [ -f "$VCPKG_DIR/bootstrap-vcpkg.sh" ]; then
@@ -36,13 +36,11 @@ mkdir -p "$BEAMMP_DIR/bin"
 cd "$BEAMMP_DIR"
 
 cmake . -B bin \
-    -G Ninja \
     -DCMAKE_TOOLCHAIN_FILE="$VCPKG_ROOT/scripts/buildsystems/vcpkg.cmake" \
     -DVCPKG_TARGET_TRIPLET=x64-linux \
-    -DCMAKE_BUILD_TYPE=Release
 
 echo "### [5/6] Compilation du Launcher ###"
-cmake --build bin --parallel --config Release 
+cmake --build bin --parallel
 
 if [ -f "$BEAMMP_DIR/bin/BeamMP-Launcher" ]; then
     echo "    - L'exécutable a bien été généré : $BEAMMP_DIR/bin/BeamMP-Launcher"
