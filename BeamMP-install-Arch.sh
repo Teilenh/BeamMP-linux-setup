@@ -7,7 +7,7 @@ BEAMMP_DIR="$HOME/BeamMP-Launcher"
 
 echo "=== [1/6] Mise à jour des paquets et installation des outils nécessaires ==="
 sudo pacman -Syu --noconfirm
-sudo pacman -S --noconfirm base-devel cmake git curl ninja
+sudo pacman -S --noconfirm base-devel cmake git curl ninja zip unzip
 
 echo "### [2/6] Préparation de vcpkg ###"
 if [ -d "$VCPKG_DIR" ] && [ -f "$VCPKG_DIR/bootstrap-vcpkg.sh" ]; then
