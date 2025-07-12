@@ -40,7 +40,7 @@ cmake . -B bin \
     -DVCPKG_TARGET_TRIPLET=x64-linux
 
 echo "### [5/6] Compilation du Launcher ###"
-cmake --build bin --parallel --quiet
+cmake --build bin --parallel 
 if [ -f "$BEAMMP_DIR/bin/BeamMP-Launcher" ]; then
     echo "    - L'exécutable a bien été généré : $BEAMMP_DIR/bin/BeamMP-Launcher"
 else
