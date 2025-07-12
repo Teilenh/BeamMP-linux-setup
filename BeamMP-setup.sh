@@ -8,7 +8,7 @@ BEAMMP_DIR="$HOME/BeamMP-Launcher"
 
 echo "=== [1/6] Mise à jour des paquets et installation des outils nécessaires ==="
 sudo apt-get -qq update
-sudo apt-get -qq install -y build-essential cmake git curl
+sudo apt-get -qq install -y build-essential make pkg-config cmake git curl
 
 echo "### [2/6] Préparation de vcpkg ###"
 if [ -d "$VCPKG_DIR" ] && [ -f "$VCPKG_DIR/bootstrap-vcpkg.sh" ]; then
