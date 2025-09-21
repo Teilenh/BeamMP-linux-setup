@@ -7,7 +7,7 @@ VCPKG_DIR="$HOME/vcpkg"
 BEAMMP_DIR="$HOME/BeamMP-Launcher"
 
 echo "=== [1/6] Mise à jour des paquets et installation des outils nécessaires ==="
-sudo dnf install cmake gcc-c++ perl-IPC-Cmd perl-FindBin perl-File-Compare perl-File-Copy
+sudo dnf install cmake gcc-c++ perl-IPC-Cmd perl-FindBin perl-File-Compare perl-File-Copy kernel-devel kernel-headers glibc-devel
 
 echo "### [2/6] Préparation de vcpkg ###"
 if [ -d "$VCPKG_DIR" ] && [ -f "$VCPKG_DIR/bootstrap-vcpkg.sh" ]; then
