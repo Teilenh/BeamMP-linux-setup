@@ -15,11 +15,18 @@ if [ -d "$VCPKG_DIR" ] && [ -f "$VCPKG_DIR/bootstrap-vcpkg.sh" ]; then
 else
     echo "    - Clonage de vcpkg dans $VCPKG_DIR"
     git clone https://github.com/microsoft/vcpkg.git "$VCPKG_DIR"
-    pushd "$VCPKG_DIR"
+    pushd "$VCPKG_DIR" > /dev/null
     ./bootstrap-vcpkg.sh
-    popd
+    # Intégration bash 
+    ./vcpkg integrate bash
+    popd > /dev/null
 fi
+
 export VCPKG_ROOT="$VCPKG_DIR"
+
+# Vérifier que vcpkg fonctionne correctement
+echo "    - Vérification de vcpkg"
+"$VCPKG_ROOT/vcpkg" version
 
 echo "### [3/6] Vérification du dossier BeamMP-Launcher ###"
 if [ -d "$BEAMMP_DIR" ] && [ -f "$BEAMMP_DIR/CMakeLists.txt" ]; then
