@@ -30,7 +30,7 @@ else
     git clone https://github.com/BeamMP/BeamMP-Launcher.git "$BEAMMP_DIR"
 fi
 
-echo "### [4/6] Configuration CMake avec Ninja et vcpkg ###"
+echo "### [4/6] build de l'app ###"
 mkdir -p "$BEAMMP_DIR/bin"
 cd "$BEAMMP_DIR"
 
