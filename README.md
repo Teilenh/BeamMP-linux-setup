@@ -1,3 +1,6 @@
+# **WARNING**!! 
+Actually, this script only work on debian, something broke with vcpkg, and IDK why or what exactly,
+
 # BeamMP-linux-setup
 little script for debian ( use apt package manager ) for build and install BeamMP on linux
 for fedora, I make an attempt, make a pr if it's doesn't work, 
