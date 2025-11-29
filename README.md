@@ -1,6 +1,10 @@
 # **WARNING**!! 
 Actually, this script only work on debian, something broke with vcpkg, and IDK why or what exactly,
 
+## **Second Warning** !
+I thing rething how I install BeamMP, something like juste add BeamMP executable in the Proton/wine prefix of steam
+
+
 # BeamMP-linux-setup
 little script for debian ( use apt package manager ) for build and install BeamMP on linux
 for fedora, I make an attempt, make a pr if it's doesn't work, 
