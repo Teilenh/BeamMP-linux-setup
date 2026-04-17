@@ -1,13 +1,1 @@
-# **WARNING**!! 
-Actually, this script only work on debian, something broke with vcpkg, and IDK why or what exactly,
-
-## **Second Warning** !
-I thing rething how I install BeamMP, something like juste add BeamMP executable in the Proton/wine prefix of steam
-
-
-# BeamMP-linux-setup
-little script for debian ( use apt package manager ) for build and install BeamMP on linux
-for fedora, I make an attempt, make a pr if it's doesn't work, 
-after the build, you can add it to lutris or other launcher, or make a .desktop
-
-For the Arch version of this script, you can run into a SSL certificate error, downgrade to the V3.110 ca-certificates-mozilla (https://archive.archlinux.org/packages/c/ca-certificates-mozilla/), that's may be a solution. 
+# BeamMP now have binaries for Debian, and other distro,
