@@ -29,4 +29,12 @@ BeamMP-Helper launch
 BeamMP-Helper set-path /chemin/vers/BeamNG.drive
 ```
 
-Prérequis minimum : un shell compatible Bash et un accès réseau au premier lancement si les dépendances ne sont pas déjà présentes localement.
+Prérequis minimum : un shell ( narmol lul ) et un accès réseau au premier lancement si les dépendances ne sont pas déjà présentes.
+
+## Distribution testé : 
+[] Fedora - dnf 
+[X] Fedora Atomic - rpm-ostree | a amélioré, c'est bancal
+[X] Debian sid - apt | testé sur PikaOS, base debian bleeding-edge, a voir sur base debian stable
+[] Debian stable - apt | devrait aussi fonctionner, mais a voir
+[] Arch - Pacman 
+[] OpenSUSE - zypper | inconnus complet pour moi - test en VM prévus 
