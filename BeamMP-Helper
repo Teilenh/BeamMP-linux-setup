@@ -1,0 +1,197 @@
+#!/usr/bin/env bash
+# BeamMP-Helper - portable project launcher.
+#
+# Usage: ./BeamMP-Helper [tui|launch|install|check|set-path <path>]
+#
+# The launcher bootstraps a local .venv when needed, then runs the project from
+# that environment. It prefers uv when available and falls back to stdlib venv +
+# pip so it can run across distributions without apt/dnf/pacman-specific logic.
+
+set -u
+
+PROJECT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd -P)"
+VENV_DIR="$PROJECT_DIR/.venv"
+VENV_PYTHON="$VENV_DIR/bin/python"
+BOOTSTRAP_MARKER="$VENV_DIR/.beammp-helper-bootstrap"
+LOCAL_UV_DIR="$PROJECT_DIR/.tools/uv"
+LOCAL_UV="$LOCAL_UV_DIR/uv"
+
+log() {
+	printf 'BeamMP-Helper: %s\n' "$*" >&2
+}
+
+fail() {
+	log "Error: $*"
+	exit 1
+}
+
+python_is_compatible() {
+	"$1" - <<'PY' >/dev/null 2>&1
+import sys
+raise SystemExit(0 if sys.version_info >= (3, 11) else 1)
+PY
+}
+
+python_can_create_pip_venv() {
+	"$1" - <<'PY' >/dev/null 2>&1
+import ensurepip
+import venv
+PY
+}
+
+find_compatible_python() {
+	local candidate
+
+	for candidate in python3.14 python3.13 python3.12 python3.11 python3 python; do
+		if command -v "$candidate" >/dev/null 2>&1 && python_is_compatible "$candidate"; then
+			command -v "$candidate"
+			return 0
+		fi
+	done
+
+	return 1
+}
+
+find_bootstrap_python() {
+	local candidate
+
+	for candidate in python3.14 python3.13 python3.12 python3.11 python3 python; do
+		if command -v "$candidate" >/dev/null 2>&1 && python_is_compatible "$candidate" && python_can_create_pip_venv "$candidate"; then
+			command -v "$candidate"
+			return 0
+		fi
+	done
+
+	return 1
+}
+
+find_uv() {
+	if [ -x "$LOCAL_UV" ]; then
+		printf '%s\n' "$LOCAL_UV"
+		return 0
+	fi
+
+	if command -v uv >/dev/null 2>&1; then
+		command -v uv
+		return 0
+	fi
+
+	return 1
+}
+
+venv_is_usable() {
+	[ -x "$VENV_PYTHON" ] || return 1
+	python_is_compatible "$VENV_PYTHON" || return 1
+	"$VENV_PYTHON" - <<'PY' >/dev/null 2>&1
+import beammp_helper
+import rich
+PY
+}
+
+bootstrap_is_stale() {
+	[ -f "$BOOTSTRAP_MARKER" ] || return 0
+	[ "$PROJECT_DIR/pyproject.toml" -nt "$BOOTSTRAP_MARKER" ] && return 0
+	[ -f "$PROJECT_DIR/uv.lock" ] && [ "$PROJECT_DIR/uv.lock" -nt "$BOOTSTRAP_MARKER" ] && return 0
+	return 1
+}
+
+create_venv_with_python() {
+	local python_bin="$1"
+
+	log "Creating local virtual environment with $("$python_bin" --version 2>&1)."
+	if ! "$python_bin" -m venv --clear "$VENV_DIR"; then
+		fail "Could not create .venv. On Debian/Ubuntu-like systems, install the package that provides python3-venv, then run this launcher again."
+	fi
+}
+
+install_with_uv() {
+	local uv_bin="$1"
+	local python_bin="${2:-}"
+
+	log "Installing project dependencies with uv."
+	if [ -n "$python_bin" ]; then
+		UV_LINK_MODE=copy "$uv_bin" sync --project "$PROJECT_DIR" --python "$python_bin"
+	else
+		UV_LINK_MODE=copy "$uv_bin" sync --project "$PROJECT_DIR"
+	fi
+
+	if [ "$?" -eq 0 ]; then
+		return 0
+	fi
+
+	log "uv sync failed; falling back to pip inside .venv."
+	return 1
+}
+
+install_local_uv() {
+	local installer
+
+	mkdir -p "$LOCAL_UV_DIR" || return 1
+	installer="$(mktemp)" || return 1
+
+	log "uv was not found; downloading a project-local uv bootstrapper."
+	if command -v curl >/dev/null 2>&1; then
+		curl -LsSf https://astral.sh/uv/install.sh -o "$installer" || return 1
+	elif command -v wget >/dev/null 2>&1; then
+		wget -qO "$installer" https://astral.sh/uv/install.sh || return 1
+	else
+		log "Neither curl nor wget is available to download uv."
+		return 1
+	fi
+
+	UV_UNMANAGED_INSTALL="$LOCAL_UV_DIR" UV_NO_MODIFY_PATH=1 sh "$installer" >/dev/null || return 1
+	[ -x "$LOCAL_UV" ]
+}
+
+install_with_pip() {
+	log "Installing project dependencies with pip."
+
+	"$VENV_PYTHON" -m ensurepip --upgrade >/dev/null 2>&1 || true
+
+	if ! "$VENV_PYTHON" -m pip --version >/dev/null 2>&1; then
+		fail "pip is not available inside .venv. Install Python with venv/pip support, then run this launcher again."
+	fi
+
+	"$VENV_PYTHON" -m pip install --upgrade pip >/dev/null || return 1
+	"$VENV_PYTHON" -m pip install -e "$PROJECT_DIR"
+}
+
+bootstrap() {
+	local python_bin
+	local uv_bin
+
+	if ! uv_bin="$(find_uv)" && install_local_uv; then
+		uv_bin="$LOCAL_UV"
+	fi
+
+	if [ -n "${uv_bin:-}" ]; then
+		python_bin="$(find_compatible_python || true)"
+		if ! install_with_uv "$uv_bin" "$python_bin"; then
+			python_bin="$(find_bootstrap_python)" || fail "uv failed, and no Python >= 3.11 with venv/pip support was found for the fallback installer."
+			if ! [ -x "$VENV_PYTHON" ] || ! python_is_compatible "$VENV_PYTHON"; then
+				create_venv_with_python "$python_bin"
+			fi
+			install_with_pip || fail "Dependency installation failed. Check your network connection and Python/pip installation, then run this launcher again."
+		fi
+	else
+		python_bin="$(find_bootstrap_python)" || fail "Python >= 3.11 with venv/pip support was not found. Install Python 3.11+ plus its venv package, then run this launcher again."
+		if ! [ -x "$VENV_PYTHON" ] || ! python_is_compatible "$VENV_PYTHON"; then
+			create_venv_with_python "$python_bin"
+		fi
+		install_with_pip || fail "Dependency installation failed. Check your network connection and Python/pip installation, then run this launcher again."
+	fi
+
+	if ! venv_is_usable; then
+		fail "The local .venv was created, but BeamMP-Helper could not be imported from it."
+	fi
+
+	touch "$BOOTSTRAP_MARKER"
+}
+
+cd "$PROJECT_DIR" || fail "Could not enter project directory: $PROJECT_DIR"
+
+if ! venv_is_usable || bootstrap_is_stale; then
+	bootstrap
+fi
+
+exec "$VENV_PYTHON" -m beammp_helper "$@"
