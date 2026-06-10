@@ -21,11 +21,12 @@ Le launcher prépare automatiquement l'environnement local du projet :
 Commandes utiles :
 
 ```bash
-./BeamMP-Helper tui
-./BeamMP-Helper check
-./BeamMP-Helper install
-./BeamMP-Helper launch
-./BeamMP-Helper set-path /chemin/vers/BeamNG.drive
+BeamMP-Helper
+BeamMP-Helper tui    # similaire a ne rien mettre
+BeamMP-Helper check
+BeamMP-Helper install
+BeamMP-Helper launch
+BeamMP-Helper set-path /chemin/vers/BeamNG.drive
 ```
 
 Prérequis minimum : un shell compatible Bash et un accès réseau au premier lancement si les dépendances ne sont pas déjà présentes localement.
