@@ -2,7 +2,7 @@
 
 Helper Linux pour configurer, installer et lancer BeamMP avec BeamNG.drive.
 ## Compatibilité | Compatibility 
-🇨🇵 Compatible avec plus d'un package manager ( pour installer les dépendances de BeamMP et de quoi le build ), apt/pacman/dnf
+🇨🇵 Compatible avec plus d'un package manager ( pour installer les dépendances de BeamMP et de quoi le build ), apt/pacman/dnf 
 🇬🇧 Compatibility with more than one package manager, Apt/Pacman/dnf 
 
 ⚠️ attempt to be okay on Fedora atomic with rpm-ostree, install the right package, but, after reboot, the build fail, so feel free to test, and make a PR
